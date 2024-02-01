@@ -1,0 +1,35 @@
+[project]
+name = "dawa-api-client"
+dynamic = ["version"]
+authors = [
+  { name="Erik Petersen", email="eht@it-trans.dk" },
+]
+description = "Library for communicating with Danmarks Adressers Web API (DAWA)"
+readme = "README.md"
+requires-python = ">=3.10"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+dependencies = [
+    "requests"
+]
+
+[build-system]
+requires = ["flit_core<4"]
+build-backend = "flit_core.buildapi"
+
+[tool.flit.sdist]
+include = [
+    ".gitignore",
+    ".flake8",
+    "LICENSE.txt",
+    "Makefile",
+     "requirements-dev.txt",
+    "requirements.txt",
+    "examples/",
+    "tests/",
+]
+
