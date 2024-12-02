@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
 import requests
+
+from .adgangsadresse import AdgangsadresseFlad, AdgangsadresseMini, AdresseQuery
 from .exceptions import ApiError
 
 
@@ -12,46 +14,59 @@ class DAWA:
     def __init__(self):
         self.base_url = "https://api.dataforsyningen.dk"
 
-    def _request(self, method="GET", endpoint="", headers=None, params=None):
+    def adgangsadresser_mini(
+        self, adresse_query: AdresseQuery
+    ) -> list[AdgangsadresseMini]:
         """
-        Sends requests to the remote API.
+        Contructs a request to the adgangsadresser endpoint with parameters defined in the Query object.
+        The 'struktur' parameter is set to 'mini'.
 
         Parameters
         ----------
-        method : str
-            Method for the request ``GET``.
-        endpoint : str
-            Endpoint for the request.
-        headers :
-            Dictionary of HTTP Headers to send with the request.
-        params :
-            Dictionary, list of tuples or bytes to send.
+        query : AdresseQuery object
 
-        Returns
-        -------
-        Response of the request.
+        Returns:
+        --------
+            AdgangsadresseMini object
         """
 
-        headers = {"Accept": "application/json"}
-        if method == "GET":
-            return requests.get(
-                f"{self.base_url}/{endpoint}", headers=headers, params=params
-            )
-        return None
+        adresse_query.struktur = "mini"
+        response = self.adgangsadresser(adresse_query.as_params())
+        return AdgangsadresseMini.schema().load(response.json(), many=True)
 
-    def adgangsadresser(self, **kwargs):
+    def adgangsadresser_flad(
+        self, adresse_query: AdresseQuery
+    ) -> list[AdgangsadresseFlad]:
+        """
+        Contructs a request to the adgangsadresser endpoint with parameters defined in the Query object.
+        The 'struktur' parameter is set to 'flad'.
+
+        Parameters
+        ----------
+        query : AdresseQuery object
+
+        Returns:
+        --------
+            AdgangsadresseFlad object
+        """
+
+        adresse_query.struktur = "flad"
+        response = self.adgangsadresser(adresse_query.as_params())
+        return AdgangsadresseFlad.schema().load(response.json(), many=True)
+
+    def adgangsadresser(self, params) -> requests.Response:
         """
         Constructs a request to the adgangsadresser endpoint.
 
         Parameters
         ----------
-        kwargs :
-            Keyword arguments to be used as parameters in the request.
-            Look at the API documentation for possibilities.
+        params :
+            Dictionary, list of tuples, bytes, or file-like object to send in the body of the Request.
+            See DAWA API documentation for possibil parameters.
 
         Returns
         -------
-            A JSON serializable Python object.
+            A requests.Response object.
 
         Raises
         ------
@@ -60,8 +75,11 @@ class DAWA:
         """
 
         try:
-            response = self._request("GET", "adgangsadresser", params=kwargs)
+            headers = {"Accept": "application/json"}
+            response = requests.get(
+                f"{self.base_url}/adgangsadresser", headers=headers, params=params
+            )
             response.raise_for_status()
-        except requests.exceptions.RequestException:
-            raise ApiError(response.content) from None
-        return response.json()
+            return response
+        except requests.exceptions.RequestException as e:
+            raise ApiError(response.content) from e

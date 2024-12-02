@@ -16,20 +16,22 @@ class TestAPI(unittest.TestCase):
         self.addCleanup(self.responses.stop)
         self.addCleanup(self.responses.reset)
 
-    def test_mock_adgangsadresser(self):
+    def test_adgangsadresser_mini(self):
         url = f"{self.api.base_url}/adgangsadresser"
 
         # Empty response (no results from query)
         self.responses.add(method=responses.GET, url=url, body="[]")
-        resp = self.api.adgangsadresser(struktur="mini", vejnavn="Gade", husnr="1")
+        query = dawa_api_client.AdresseQuery(vejnavn="Gade", husnr="1")
+        resp = self.api.adgangsadresser_mini(adresse_query=query)
         self.assertEqual([], resp)
 
-    def test_mock_adgangsadresser_not_found(self):
+    def test_adgangsadresser_not_found(self):
         url = f"{self.api.base_url}/adgangsadresser"
 
         # Empty response (no results from query)
         self.responses.add(method=responses.GET, url=url, body="[]")
-        resp = self.api.adgangsadresser(struktur="mini", vejnavn="Gade", husnr="1")
+        query = dawa_api_client.AdresseQuery(vejnavn="Gade", husnr="1")
+        resp = self.api.adgangsadresser_mini(query)
         self.assertEqual([], resp)
 
         # ResourceNotFoundError
@@ -41,10 +43,8 @@ class TestAPI(unittest.TestCase):
                     }
         }"""
         self.responses.add(method=responses.GET, url=url, body=error, status=404)
-        with self.assertRaises(
-            dawa_api_client.ApiError
-        ) as exception_context:
-            self.api.adgangsadresser()
+        with self.assertRaises(dawa_api_client.ApiError) as exception_context:
+            self.api.adgangsadresser_mini(dawa_api_client.AdresseQuery())
         self.assertEqual(exception_context.exception.type, "ResourceNotFoundError")
         self.assertEqual(
             exception_context.exception.title, "The resource was not found"
@@ -54,12 +54,13 @@ class TestAPI(unittest.TestCase):
             {"id": "0254b942-f3ac-4969-a963-d2c4ed9ab943"},
         )
 
-    def test_mock_adgangsadresser_query_parameter_format_error(self):
+    def test_adgangsadresser_query_parameter_format_error(self):
         url = f"{self.api.base_url}/adgangsadresser"
 
         # Empty response (no results from query)
         self.responses.add(method=responses.GET, url=url, body="[]")
-        resp = self.api.adgangsadresser(struktur="mini", vejnavn="Gade", husnr="1")
+        query = dawa_api_client.AdresseQuery(vejnavn="Gade", husnr="1")
+        resp = self.api.adgangsadresser_mini(query)
         self.assertEqual([], resp)
 
         # QueryParameterFormatError
@@ -74,10 +75,8 @@ class TestAPI(unittest.TestCase):
                             ]
                 }"""
         self.responses.add(method=responses.GET, url=url, body=error, status=400)
-        with self.assertRaises(
-            dawa_api_client.ApiError
-        ) as exception_context:
-            self.api.adgangsadresser()
+        with self.assertRaises(dawa_api_client.ApiError) as exception_context:
+            self.api.adgangsadresser_mini(dawa_api_client.AdresseQuery())
 
         self.assertEqual(exception_context.exception.type, "QueryParameterFormatError")
         self.assertEqual(
@@ -93,3 +92,20 @@ class TestAPI(unittest.TestCase):
                 ]
             ],
         )
+
+    def test_server_error_500(self):
+        url = f"{self.api.base_url}/adgangsadresser"
+        error = r"""{
+                        "type": "InternalServerError",
+                        "title": "Something unexpected happened inside the server."
+        }"""
+        self.responses.add(method=responses.GET, url=url, body=error, status=500)
+        with self.assertRaises(dawa_api_client.ApiError) as exception_context:
+            self.api.adgangsadresser_mini(dawa_api_client.AdresseQuery())
+
+        self.assertEqual(exception_context.exception.type, "InternalServerError")
+        self.assertEqual(
+            exception_context.exception.title,
+            "Something unexpected happened inside the server.",
+        )
+        self.assertEqual(exception_context.exception.details, None)
