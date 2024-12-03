@@ -1,14 +1,13 @@
-import dawa_api
-from dawa_api import AdresseQuery
+import dawa_api as dawa
 
 
 def main():
     try:
-        dawa = dawa_api.DAWA()
+        client = dawa.Client()
 
         print("Results for a complete postalcode:")
-        query = AdresseQuery(postnr="1218")
-        result = dawa.adgangsadresser_mini(query)
+        query = dawa.AdresseQuery(postnr="1218")
+        result = client.adgangsadresser_mini(query)
         for r in result:
             print(
                 f"{r.vejnavn} {r.husnr:>3}, {r.postnr} {r.postnrnavn}"
@@ -18,8 +17,10 @@ def main():
         print("-" * 25 + "\r\n")
 
         print("Results for a single address:")
-        query = AdresseQuery(vejnavn="Christians X's Vej", husnr="39", postnr="6100")
-        result = dawa.adgangsadresser_mini(query)
+        query = dawa.AdresseQuery(
+            vejnavn="Christians X's Vej", husnr="39", postnr="6100"
+        )
+        result = client.adgangsadresser_mini(query)
         for r in result:
             print(
                 f"{r.vejnavn} {r.husnr:>3}, {r.postnr} {r.postnrnavn}"
@@ -29,11 +30,11 @@ def main():
         print("-" * 25 + "\r\n")
 
         print("Result of a invalid request:")
-        query = AdresseQuery(vejpunkt_id="2", adgangspunktid="0")
-        result = dawa.adgangsadresser_mini(query)
+        query = dawa.AdresseQuery(vejpunkt_id="2", adgangspunktid="0")
+        result = client.adgangsadresser_mini(query)
         print(result)
 
-    except dawa_api.ApiError as error:
+    except dawa.ApiError as error:
         print("The request failed:")
         print(f"{error.type}, {error.title}")
         print(f"{error.details}")

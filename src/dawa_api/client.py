@@ -6,7 +6,7 @@ from .adgangsadresse import AdgangsadresseFlad, AdgangsadresseMini, AdresseQuery
 from .exceptions import ApiError
 
 
-class DAWA:
+class Client:
     """
     Class for interacting with DAWA - Danmarks Adressers Web API.
     """
