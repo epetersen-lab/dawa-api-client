@@ -1,13 +1,13 @@
 import json
-import dawa_api_client
+import dawa_api
 
 
 def main():
     try:
-        dawa = dawa_api_client.DAWA()
+        dawa = dawa_api.DAWA()
 
         print("Results for a single address:")
-        query = dawa_api_client.AdresseQuery(
+        query = dawa_api.AdresseQuery(
             vejnavn="Christian X's Vej", husnr="39", postnr="6100"
         )
         result = dawa.adgangsadresser_mini(query)
@@ -21,7 +21,7 @@ def main():
             )
         print(f"Results: {len(result)}")
 
-    except dawa_api_client.ApiError as error:
+    except dawa_api.ApiError as error:
         print("The request failed:")
         print(f"{error.type}, {error.title}")
         print(f"{error.details}")

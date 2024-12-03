@@ -1,10 +1,10 @@
-import dawa_api_client
-from dawa_api_client import AdresseQuery
+import dawa_api
+from dawa_api import AdresseQuery
 
 
 def main():
     try:
-        dawa = dawa_api_client.DAWA()
+        dawa = dawa_api.DAWA()
 
         print("Results for a complete postalcode:")
         query = AdresseQuery(postnr="1218")
@@ -33,7 +33,7 @@ def main():
         result = dawa.adgangsadresser_mini(query)
         print(result)
 
-    except dawa_api_client.ApiError as error:
+    except dawa_api.ApiError as error:
         print("The request failed:")
         print(f"{error.type}, {error.title}")
         print(f"{error.details}")

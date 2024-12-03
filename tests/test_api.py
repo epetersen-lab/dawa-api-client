@@ -2,7 +2,7 @@
 
 import unittest
 import responses
-import dawa_api_client
+import dawa_api as dawa
 
 
 class TestAPI(unittest.TestCase):
@@ -10,7 +10,7 @@ class TestAPI(unittest.TestCase):
         self.responses = responses.RequestsMock()
         self.responses.start()
 
-        self.api = dawa_api_client.DAWA()
+        self.api = dawa.DAWA()
 
     def tearDown(self) -> None:
         self.addCleanup(self.responses.stop)
@@ -21,7 +21,7 @@ class TestAPI(unittest.TestCase):
 
         # Empty response (no results from query)
         self.responses.add(method=responses.GET, url=url, body="[]")
-        query = dawa_api_client.AdresseQuery(vejnavn="Gade", husnr="1")
+        query = dawa.AdresseQuery(vejnavn="Gade", husnr="1")
         resp = self.api.adgangsadresser_mini(adresse_query=query)
         self.assertEqual([], resp)
 
@@ -30,7 +30,7 @@ class TestAPI(unittest.TestCase):
 
         # Empty response (no results from query)
         self.responses.add(method=responses.GET, url=url, body="[]")
-        query = dawa_api_client.AdresseQuery(vejnavn="Gade", husnr="1")
+        query = dawa.AdresseQuery(vejnavn="Gade", husnr="1")
         resp = self.api.adgangsadresser_mini(query)
         self.assertEqual([], resp)
 
@@ -43,8 +43,8 @@ class TestAPI(unittest.TestCase):
                     }
         }"""
         self.responses.add(method=responses.GET, url=url, body=error, status=404)
-        with self.assertRaises(dawa_api_client.ApiError) as exception_context:
-            self.api.adgangsadresser_mini(dawa_api_client.AdresseQuery())
+        with self.assertRaises(dawa.ApiError) as exception_context:
+            self.api.adgangsadresser_mini(dawa.AdresseQuery())
         self.assertEqual(exception_context.exception.type, "ResourceNotFoundError")
         self.assertEqual(
             exception_context.exception.title, "The resource was not found"
@@ -59,7 +59,7 @@ class TestAPI(unittest.TestCase):
 
         # Empty response (no results from query)
         self.responses.add(method=responses.GET, url=url, body="[]")
-        query = dawa_api_client.AdresseQuery(vejnavn="Gade", husnr="1")
+        query = dawa.AdresseQuery(vejnavn="Gade", husnr="1")
         resp = self.api.adgangsadresser_mini(query)
         self.assertEqual([], resp)
 
@@ -75,8 +75,8 @@ class TestAPI(unittest.TestCase):
                             ]
                 }"""
         self.responses.add(method=responses.GET, url=url, body=error, status=400)
-        with self.assertRaises(dawa_api_client.ApiError) as exception_context:
-            self.api.adgangsadresser_mini(dawa_api_client.AdresseQuery())
+        with self.assertRaises(dawa.ApiError) as exception_context:
+            self.api.adgangsadresser_mini(dawa.AdresseQuery())
 
         self.assertEqual(exception_context.exception.type, "QueryParameterFormatError")
         self.assertEqual(
@@ -100,8 +100,8 @@ class TestAPI(unittest.TestCase):
                         "title": "Something unexpected happened inside the server."
         }"""
         self.responses.add(method=responses.GET, url=url, body=error, status=500)
-        with self.assertRaises(dawa_api_client.ApiError) as exception_context:
-            self.api.adgangsadresser_mini(dawa_api_client.AdresseQuery())
+        with self.assertRaises(dawa.ApiError) as exception_context:
+            self.api.adgangsadresser_mini(dawa.AdresseQuery())
 
         self.assertEqual(exception_context.exception.type, "InternalServerError")
         self.assertEqual(

@@ -1,5 +1,5 @@
 [project]
-name = "dawa-api-client"
+name = "dawa-api"
 dynamic = ["version"]
 authors = [
   { name="Erik Petersen", email="eht@it-trans.dk" },
