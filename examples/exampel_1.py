@@ -1,3 +1,4 @@
+import sys
 import dawa_api as dawa
 
 
@@ -18,7 +19,7 @@ def main():
 
         print("Results for a single address:")
         query = dawa.AdresseQuery(
-            vejnavn="Christians X's Vej", husnr="39", postnr="6100"
+            vejnavn="Christian X's Vej", husnr="39", postnr="6100"
         )
         result = client.adgangsadresser_mini(query)
         for r in result:
@@ -35,12 +36,12 @@ def main():
         print(result)
 
     except dawa.ApiError as error:
-        print("The request failed:")
-        print(f"{error.type}, {error.title}")
-        print(f"{error.details}")
-    except Exception as error:
-        raise error
+        print(f"Error: {error}")
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except Exception as error:
+        print(f"Unexpected error: {error}")
+        sys.exit(1)

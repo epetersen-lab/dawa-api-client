@@ -43,9 +43,9 @@ class TestAPI(unittest.TestCase):
                     }
         }"""
         self.responses.add(method=responses.GET, url=url, body=error, status=404)
-        with self.assertRaises(dawa.ApiError) as exception_context:
+        with self.assertRaises(dawa.ApiErrorResourceNotFound) as exception_context:
             self.client.adgangsadresser_mini(dawa.AdresseQuery())
-        self.assertEqual(exception_context.exception.type, "ResourceNotFoundError")
+        self.assertEqual(exception_context.exception.type_, "ResourceNotFoundError")
         self.assertEqual(
             exception_context.exception.title, "The resource was not found"
         )
@@ -75,10 +75,10 @@ class TestAPI(unittest.TestCase):
                             ]
                 }"""
         self.responses.add(method=responses.GET, url=url, body=error, status=400)
-        with self.assertRaises(dawa.ApiError) as exception_context:
+        with self.assertRaises(dawa.ApiErrorQueryParameterFormat) as exception_context:
             self.client.adgangsadresser_mini(dawa.AdresseQuery())
 
-        self.assertEqual(exception_context.exception.type, "QueryParameterFormatError")
+        self.assertEqual(exception_context.exception.type_, "QueryParameterFormatError")
         self.assertEqual(
             exception_context.exception.title,
             "One or more query parameters was ill-formed.",
@@ -100,12 +100,21 @@ class TestAPI(unittest.TestCase):
                         "title": "Something unexpected happened inside the server."
         }"""
         self.responses.add(method=responses.GET, url=url, body=error, status=500)
-        with self.assertRaises(dawa.ApiError) as exception_context:
+        with self.assertRaises(dawa.ApiErrorInternalServer) as exception_context:
             self.client.adgangsadresser_mini(dawa.AdresseQuery())
 
-        self.assertEqual(exception_context.exception.type, "InternalServerError")
+        self.assertEqual(exception_context.exception.type_, "InternalServerError")
         self.assertEqual(
             exception_context.exception.title,
             "Something unexpected happened inside the server.",
         )
-        self.assertEqual(exception_context.exception.details, None)
+        self.assertEqual(
+            exception_context.exception.details, f"HTTP Status:500, {error}"
+        )
+
+    def test_unknown_error(self):
+        url = f"{self.client.base_url}/adgangsadresser"
+        error = ""
+        self.responses.add(method=responses.GET, url=url, body=error, status=401)
+        with self.assertRaises(dawa.ApiErrorUnknown):
+            self.client.adgangsadresser_mini(dawa.AdresseQuery())
