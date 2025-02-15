@@ -49,12 +49,13 @@ class Client:
 
     def __init__(self):
         self.base_url = "https://api.dataforsyningen.dk"
+        self.session = requests.Session()
 
     def _request(self, method: str, path: str, **kwargs) -> requests.Response:
         headers = {"Accept": "application/json"}
         response = None
         try:
-            response = requests.request(
+            response = self.session.request(
                 method=method, url=self.base_url + path, headers=headers, **kwargs
             )
             response.raise_for_status()
