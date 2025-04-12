@@ -28,7 +28,8 @@ def main():
         query = dawa.AdresseQuery(vejpunkt_id="2", adgangspunktid="0")
         result = client.adgangsadresser_mini(query)
         print(result)
-
+    except dawa.ApiErrorConnection as error:
+        print(f"Connection failed: {error}")
     except dawa.ApiError as error:
         print(f"Error: {error}")
 
