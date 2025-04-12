@@ -10,10 +10,7 @@ def main():
         query = dawa.AdresseQuery(postnr="1218")
         result = client.adgangsadresser_mini(query)
         for r in result:
-            print(
-                f"{r.vejnavn} {r.husnr:>3}, {r.postnr} {r.postnrnavn}"
-                f" ({r.x}, {r.y})"
-            )
+            print(f"{r.vejnavn} {r.husnr:>3}, {r.postnr} {r.postnrnavn} ({r.x}, {r.y})")
         print(f"Results: {len(result)}")
         print("-" * 25 + "\r\n")
 
@@ -23,10 +20,7 @@ def main():
         )
         result = client.adgangsadresser_mini(query)
         for r in result:
-            print(
-                f"{r.vejnavn} {r.husnr:>3}, {r.postnr} {r.postnrnavn}"
-                f" ({r.x}, {r.y})"
-            )
+            print(f"{r.vejnavn} {r.husnr:>3}, {r.postnr} {r.postnrnavn} ({r.x}, {r.y})")
         print(f"Results: {len(result)}")
         print("-" * 25 + "\r\n")
 
