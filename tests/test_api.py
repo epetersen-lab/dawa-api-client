@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import unittest
+import requests
 import responses
 import dawa_api as dawa
 
@@ -117,4 +118,12 @@ class TestAPI(unittest.TestCase):
         error = ""
         self.responses.add(method=responses.GET, url=url, body=error, status=401)
         with self.assertRaises(dawa.ApiErrorUnknown):
+            self.client.adgangsadresser_mini(dawa.AdresseQuery())
+
+    def test_connection_error(self):
+        url = f"{self.client.base_url}/adgangsadresser"
+        self.responses.add(
+            method=responses.GET, url=url, body=requests.ConnectionError()
+        )
+        with self.assertRaises(dawa.ApiErrorConnection):
             self.client.adgangsadresser_mini(dawa.AdresseQuery())
