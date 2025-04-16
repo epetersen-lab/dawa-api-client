@@ -14,7 +14,8 @@ classifiers = [
 ]
 
 dependencies = [
-    "requests"
+    "requests",
+    "dataclasses_json"
 ]
 
 [build-system]
