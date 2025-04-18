@@ -1,8 +1,8 @@
-# -*- coding: utf-8 -*-
-
 import unittest
+
 import requests
 import responses
+
 import dawa_api as dawa
 
 
