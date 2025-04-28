@@ -45,16 +45,17 @@ class Client:
     Class for interacting with DAWA - Danmarks Adressers Web API.
     """
 
-    def __init__(self):
+    def __init__(self, verify: bool = True):
         self.base_url = "https://api.dataforsyningen.dk"
         self.session = requests.Session()
+        self.verify = verify
 
     def _request(self, method: str, path: str, **kwargs) -> requests.Response:
         headers = {"Accept": "application/json"}
         response = None
         try:
             response = self.session.request(
-                method=method, url=self.base_url + path, headers=headers, **kwargs
+                method=method, url=self.base_url + path, headers=headers, verify=self.verify, **kwargs
             )
             response.raise_for_status()
             return response
