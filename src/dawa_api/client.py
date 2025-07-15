@@ -1,3 +1,4 @@
+import logging
 import requests
 
 from .adgangsadresse import AdgangsadresseFlad, AdgangsadresseMini, AdresseQuery
@@ -9,6 +10,9 @@ from .exceptions import (
     ApiErrorResourceNotFound,
     ApiErrorUnknown,
 )
+
+logger = logging.getLogger(__name__)
+logger.addHandler(logging.NullHandler())
 
 
 class ApiErrorResponse:
@@ -57,6 +61,8 @@ class Client:
             response = self.session.request(
                 method=method, url=self.base_url + path, headers=headers, verify=self.verify, **kwargs
             )
+            logger.debug("method=%s, url=%s, headers=%s, body=%s", response.request.method, response.request.url, response.request.headers ,response.request.body)
+            logger.debug("status=%s, headers=%s, body=%s", response.status_code, response.headers, response.text)
             response.raise_for_status()
             return response
         except requests.ConnectionError as error:
