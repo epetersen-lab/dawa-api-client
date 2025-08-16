@@ -15,7 +15,13 @@ classifiers = [
 
 dependencies = [
     "requests",
-    "dataclasses_json"
+    "dataclasses_json",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.4.1",
+    "responses>=0.25.8",
 ]
 
 [build-system]
@@ -25,11 +31,7 @@ build-backend = "flit_core.buildapi"
 [tool.flit.sdist]
 include = [
     ".gitignore",
-    ".flake8",
     "LICENSE.txt",
-    "Makefile",
-     "requirements-dev.txt",
-    "requirements.txt",
     "examples/",
     "tests/",
 ]
