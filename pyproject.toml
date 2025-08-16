@@ -30,6 +30,7 @@ build-backend = "flit_core.buildapi"
 
 [tool.flit.sdist]
 include = [
+    "uv.lock",
     ".gitignore",
     "LICENSE.txt",
     "examples/",
