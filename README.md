@@ -1,5 +1,11 @@
 # DAWA API Client
 
+## Deprecation warning
+
+The DAWA API is deprecated and will close August 17, 2026. (https://www.ejendomsdatalisten.dk/datakilder/dawa)
+
+I have implemented a python client/API wrapper for the newer Adressevælger API which can be found here: [Adressevaelger](https://github.com/epetersen-lab/adressevaelger)
+
 
 ## Introduction
 
